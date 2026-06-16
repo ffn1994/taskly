@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, AlertCircle, Check, Clock, Calendar, Tag } from 'lucide-react';
+import { Sparkles, AlertCircle, Check, Clock, Calendar, Tag, RefreshCw } from 'lucide-react';
 import { extractTaskFromNaturalLanguage, isAIConfigured } from '../lib/ai';
 import { createTask } from '../lib/storage';
-import type { AIExtractedTask, Priority, TaskCategory } from '../types';
-import { PRIORITY_CONFIG, CATEGORY_CONFIG } from '../types';
+import type { AIExtractedTask, Priority, TaskCategory, Recurrence } from '../types';
+import { PRIORITY_CONFIG, CATEGORY_CONFIG, RECURRENCE_CONFIG } from '../types';
 import PriorityBadge from '../components/PriorityBadge';
 
 const examplePrompts = [
@@ -232,20 +232,37 @@ export default function AddTask() {
             </div>
           </div>
 
-          {/* Duration */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">
-              المدة التقديرية (بالدقائق)
-            </label>
-            <input
-              type="number"
-              value={extracted.estimated_duration || ''}
-              onChange={e => updateExtracted('estimated_duration', e.target.value ? parseInt(e.target.value) : undefined)}
-              className="input-field text-sm"
-              placeholder="30"
-              min={5}
-              max={480}
-            />
+          {/* Duration & Recurrence */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">
+                المدة (بالدقائق)
+              </label>
+              <input
+                type="number"
+                value={extracted.estimated_duration || ''}
+                onChange={e => updateExtracted('estimated_duration', e.target.value ? parseInt(e.target.value) : undefined)}
+                className="input-field text-sm"
+                placeholder="30"
+                min={5}
+                max={480}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider flex items-center gap-1">
+                <RefreshCw size={11} />
+                التكرار
+              </label>
+              <select
+                value={extracted.recurrence || 'none'}
+                onChange={e => updateExtracted('recurrence', e.target.value as Recurrence)}
+                className="input-field text-sm"
+              >
+                {Object.entries(RECURRENCE_CONFIG).map(([v, c]) => (
+                  <option key={v} value={v}>{c.emoji} {c.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Priority Preview */}

@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, PlusCircle, Trophy, CheckSquare, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, Trophy, CheckSquare, Settings, LogOut, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 const navItems = [
   { path: '/dashboard', label: 'لوحة التحكم', icon: LayoutDashboard },
@@ -12,6 +13,7 @@ const navItems = [
 export default function Navbar() {
   const location = useLocation();
   const { profile, isGuest, signOut } = useAuth();
+  const { dark, toggle } = useTheme();
 
   return (
     <nav className="bg-[#1E2A4A] text-white shadow-lg sticky top-0 z-40">
@@ -41,6 +43,15 @@ export default function Navbar() {
               </Link>
             );
           })}
+
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={toggle}
+            className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+            title={dark ? 'الوضع النهاري' : 'الوضع الداكن'}
+          >
+            {dark ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
 
           {/* User */}
           <div className="flex items-center gap-2 mr-2 border-r border-white/10 pr-3">

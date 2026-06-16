@@ -12,6 +12,15 @@ export type TaskCategory =
   | 'personal'
   | 'other';
 
+export type Recurrence = 'none' | 'daily' | 'weekly' | 'monthly';
+
+export const RECURRENCE_CONFIG: Record<Recurrence, { label: string; emoji: string }> = {
+  none:    { label: 'لا تكرار', emoji: '—' },
+  daily:   { label: 'يومياً', emoji: '🔁' },
+  weekly:  { label: 'أسبوعياً', emoji: '📅' },
+  monthly: { label: 'شهرياً', emoji: '🗓️' },
+};
+
 export interface Task {
   id: string;
   title: string;
@@ -21,6 +30,7 @@ export interface Task {
   due_date?: string;
   due_time?: string;
   estimated_duration?: number;
+  recurrence?: Recurrence;
   status: TaskStatus;
   completed_at?: string;
   created_at: string;
@@ -35,6 +45,7 @@ export interface AIExtractedTask {
   due_date?: string;
   due_time?: string;
   estimated_duration?: number;
+  recurrence?: Recurrence;
 }
 
 export interface DailyPlan {

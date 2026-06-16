@@ -38,7 +38,7 @@ export default function TaskCard({ task, onComplete, onDelete, showActions = tru
 
   return (
     <div
-      className={`relative bg-white rounded-2xl border-r-4 shadow-sm hover:shadow-md transition-all duration-200 p-4 animate-fade-in ${
+      className={`relative bg-white dark:bg-slate-800 rounded-2xl border-r-4 shadow-sm hover:shadow-md transition-all duration-200 p-4 animate-fade-in ${
         completed ? 'opacity-75' : ''
       }`}
       style={{ borderRightColor: config.color }}
@@ -68,7 +68,7 @@ export default function TaskCard({ task, onComplete, onDelete, showActions = tru
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h3 className={`font-semibold text-[#2C3E50] leading-snug ${completed ? 'line-through text-gray-400' : ''}`}>
+            <h3 className={`font-semibold text-[#2C3E50] dark:text-slate-100 leading-snug ${completed ? 'line-through text-gray-400 dark:text-slate-500' : ''}`}>
               {task.title}
             </h3>
             <div className="flex items-center gap-1 flex-shrink-0">
@@ -97,7 +97,7 @@ export default function TaskCard({ task, onComplete, onDelete, showActions = tru
           <div className="flex items-center flex-wrap gap-2 mt-3">
             <PriorityBadge priority={task.priority} size="sm" />
 
-            <span className="inline-flex items-center gap-1 text-xs text-gray-500 bg-gray-50 rounded-full px-2 py-0.5">
+            <span className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-slate-400 bg-gray-50 dark:bg-slate-700 rounded-full px-2 py-0.5">
               {catConfig.emoji} {catConfig.label}
             </span>
 

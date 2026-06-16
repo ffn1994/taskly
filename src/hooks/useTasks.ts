@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Task, DashboardStats } from '../types';
 import { getAllTasks, getTodayTasks, getCompletedTodayTasks, completeTask, deleteTask } from '../lib/storage';
+import { scheduleTaskNotifications } from '../lib/notifications';
 
 export function useTasks() {
   const [allTasks, setAllTasks] = useState<Task[]>([]);
@@ -21,6 +22,7 @@ export function useTasks() {
       setTodayTasks(today);
       setCompletedToday(completed);
       setError(null);
+      scheduleTaskNotifications(today);
     } catch (e) {
       setError('حدث خطأ في تحميل المهام');
     } finally {

@@ -1,6 +1,6 @@
-import type { Task, AIExtractedTask } from '../types';
+import type { Task, AIExtractedTask, Recurrence } from '../types';
 import { supabase, isSupabaseConfigured } from './supabase';
-import { format } from 'date-fns';
+import { format, addDays, addWeeks, addMonths, parseISO } from 'date-fns';
 
 const STORAGE_KEY = 'taskly_tasks';
 
@@ -123,11 +123,34 @@ export async function updateTask(id: string, updates: Partial<Task>): Promise<Ta
   return tasks[idx];
 }
 
+function nextRecurrenceDate(dueDateStr: string | undefined, recurrence: Recurrence): string {
+  const base = dueDateStr ? parseISO(dueDateStr) : new Date();
+  switch (recurrence) {
+    case 'daily':   return format(addDays(base, 1), 'yyyy-MM-dd');
+    case 'weekly':  return format(addWeeks(base, 1), 'yyyy-MM-dd');
+    case 'monthly': return format(addMonths(base, 1), 'yyyy-MM-dd');
+    default: return format(base, 'yyyy-MM-dd');
+  }
+}
+
 export async function completeTask(id: string): Promise<Task> {
-  return updateTask(id, {
-    status: 'completed',
-    completed_at: now(),
-  });
+  const task = await getTaskById(id);
+  const completed = await updateTask(id, { status: 'completed', completed_at: now() });
+
+  if (task?.recurrence && task.recurrence !== 'none') {
+    await createTask({
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      category: task.category,
+      due_date: nextRecurrenceDate(task.due_date, task.recurrence),
+      due_time: task.due_time,
+      estimated_duration: task.estimated_duration,
+      recurrence: task.recurrence,
+    });
+  }
+
+  return completed;
 }
 
 export async function deleteTask(id: string): Promise<void> {

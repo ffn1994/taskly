@@ -1,13 +1,37 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --surface: #ffffff;
+  --surface-2: #F8F9FA;
+  --surface-3: #f3f4f6;
+  --border: #e5e7eb;
+  --border-light: #f3f4f6;
+  --text-primary: #2C3E50;
+  --text-muted: #6b7280;
+  --text-subtle: #9ca3af;
+}
+
+html.dark {
+  --surface: #1e293b;
+  --surface-2: #0f172a;
+  --surface-3: #1e293b;
+  --border: #334155;
+  --border-light: #334155;
+  --text-primary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+}
+
 @layer base {
   * {
     font-family: 'Cairo', 'Segoe UI', 'Tajawal', Arial, sans-serif;
   }
 
   body {
-    background-color: #F8F9FA;
-    color: #2C3E50;
+    background-color: var(--surface-2);
+    color: var(--text-primary);
     margin: 0;
     direction: rtl;
   }
@@ -24,15 +48,26 @@
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-[#2C3E50] font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg border border-gray-200 active:scale-95 cursor-pointer;
+    @apply font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 cursor-pointer;
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover {
+    background: var(--surface-3);
   }
 
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6;
+    @apply rounded-2xl shadow-sm p-6;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
   }
 
   .input-field {
-    @apply w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#2C3E50] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4A90D9] focus:border-transparent transition-all duration-200;
+    @apply w-full rounded-xl px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4A90D9] focus:border-transparent transition-all duration-200;
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
   }
 }
 
