@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    font-family: 'Cairo', 'Segoe UI', 'Tajawal', Arial, sans-serif;
+  }
+
+  body {
+    background-color: #F8F9FA;
+    color: #2C3E50;
+    margin: 0;
+    direction: rtl;
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[#4A90D9] hover:bg-[#3a7bc8] text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 cursor-pointer;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-[#2C3E50] font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg border border-gray-200 active:scale-95 cursor-pointer;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6;
+  }
+
+  .input-field {
+    @apply w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#2C3E50] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4A90D9] focus:border-transparent transition-all duration-200;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes checkBounce {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-check {
+  animation: checkBounce 0.3s ease-out;
+}
