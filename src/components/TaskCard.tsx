@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, Clock, Calendar, Trash2, ChevronLeft } from 'lucide-react';
 import type { Task } from '../types';
-import { PRIORITY_CONFIG, CATEGORY_CONFIG } from '../types';
+import { PRIORITY_CONFIG, CATEGORY_CONFIG, RECURRENCE_CONFIG } from '../types';
 import PriorityBadge from './PriorityBadge';
 import { format, parseISO } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -117,6 +117,12 @@ export default function TaskCard({ task, onComplete, onDelete, showActions = tru
 
             {task.estimated_duration && (
               <span className="text-xs text-gray-400">{task.estimated_duration} د</span>
+            )}
+
+            {task.recurrence && task.recurrence !== 'none' && (
+              <span className="text-xs text-blue-500">
+                {RECURRENCE_CONFIG[task.recurrence].emoji} {RECURRENCE_CONFIG[task.recurrence].label}
+              </span>
             )}
           </div>
 

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, Edit3, Check, Trash2, Clock, Calendar, CheckCircle2 } from 'lucide-react';
-import type { Task, Priority, TaskCategory } from '../types';
-import { PRIORITY_CONFIG, CATEGORY_CONFIG } from '../types';
+import type { Task, Priority, TaskCategory, Recurrence } from '../types';
+import { PRIORITY_CONFIG, CATEGORY_CONFIG, RECURRENCE_CONFIG } from '../types';
 import { getTaskById, updateTask, completeTask, deleteTask } from '../lib/storage';
 import PriorityBadge from '../components/PriorityBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -244,22 +244,44 @@ export default function TaskDetails() {
           </div>
         </div>
 
-        {/* Duration */}
-        <div>
-          <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">المدة التقديرية</label>
-          {editing ? (
-            <input
-              type="number"
-              value={editData.estimated_duration || ''}
-              onChange={e => setEditData({ ...editData, estimated_duration: e.target.value ? parseInt(e.target.value) : undefined })}
-              className="input-field text-sm"
-              placeholder="بالدقائق"
-            />
-          ) : (
-            <p className="text-gray-600 text-sm">
-              {task.estimated_duration ? `${task.estimated_duration} دقيقة` : 'غير محدد'}
-            </p>
-          )}
+        {/* Duration & Recurrence */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">المدة التقديرية</label>
+            {editing ? (
+              <input
+                type="number"
+                value={editData.estimated_duration || ''}
+                onChange={e => setEditData({ ...editData, estimated_duration: e.target.value ? parseInt(e.target.value) : undefined })}
+                className="input-field text-sm"
+                placeholder="بالدقائق"
+              />
+            ) : (
+              <p className="text-gray-600 text-sm">
+                {task.estimated_duration ? `${task.estimated_duration} دقيقة` : 'غير محدد'}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">التكرار</label>
+            {editing ? (
+              <select
+                value={editData.recurrence || 'none'}
+                onChange={e => setEditData({ ...editData, recurrence: e.target.value as Recurrence })}
+                className="input-field text-sm"
+              >
+                {Object.entries(RECURRENCE_CONFIG).map(([v, c]) => (
+                  <option key={v} value={v}>{c.emoji} {c.label}</option>
+                ))}
+              </select>
+            ) : (
+              <p className="text-gray-600 text-sm">
+                {task.recurrence && task.recurrence !== 'none'
+                  ? `${RECURRENCE_CONFIG[task.recurrence].emoji} ${RECURRENCE_CONFIG[task.recurrence].label}`
+                  : 'لا تكرار'}
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Timestamps */}

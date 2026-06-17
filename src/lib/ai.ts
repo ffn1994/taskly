@@ -2,15 +2,18 @@ import OpenAI from 'openai';
 import type { AIExtractedTask, Priority, TaskCategory } from '../types';
 import { format, addDays } from 'date-fns';
 
-const apiKey = import.meta.env.VITE_OPENAI_API_KEY || '';
+function getApiKey(): string {
+  return localStorage.getItem('taskly_openai_key') ||
+    import.meta.env.VITE_OPENAI_API_KEY || '';
+}
 
-const openai = new OpenAI({
-  apiKey,
-  dangerouslyAllowBrowser: true,
-});
+function getClient(): OpenAI {
+  return new OpenAI({ apiKey: getApiKey(), dangerouslyAllowBrowser: true });
+}
 
 export const isAIConfigured = () => {
-  return apiKey !== '' && apiKey !== 'your_openai_api_key_here';
+  const key = getApiKey();
+  return key !== '' && key !== 'your_openai_api_key_here';
 };
 
 const todayStr = () => format(new Date(), 'yyyy-MM-dd');
@@ -59,7 +62,7 @@ export async function extractTaskFromNaturalLanguage(text: string): Promise<AIEx
 - other: أخرى`;
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await getClient().chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.3,
@@ -99,7 +102,7 @@ ${tasks.map(t => `- ${t.title} (${t.priority})`).join('\n')}
 اكتب رسالة مباشرة وعملية ومحفزة، ذكر أعداداً محددة.`;
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await getClient().chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.7,
@@ -129,7 +132,7 @@ ${tasks.map(t => `- ${t.title} (أولوية: ${t.priority}، مدة مقدرة:
 اكتب خطة موجزة (3-4 جمل) تحدد فيها ترتيب المهام وتعطي نصيحة عملية.`;
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await getClient().chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.5,

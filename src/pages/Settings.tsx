@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { User, Clock, LogOut, Save, CheckCircle2, Moon, Sun, Bell } from 'lucide-react';
+import { User, Clock, LogOut, Save, CheckCircle2, Moon, Sun, Bell, Key, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { requestNotificationPermission, getNotificationPermission } from '../lib/notifications';
+import { isAIConfigured } from '../lib/ai';
 
 export default function Settings() {
   const { profile, updateProfile, signOut, user, isGuest } = useAuth();
@@ -13,10 +14,23 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [notifStatus, setNotifStatus] = useState(getNotificationPermission);
+  const [openAIKey, setOpenAIKey] = useState(() => localStorage.getItem('taskly_openai_key') || '');
+  const [showKey, setShowKey] = useState(false);
+  const [keySaved, setKeySaved] = useState(false);
 
   const handleEnableNotifications = async () => {
     const granted = await requestNotificationPermission();
     setNotifStatus(granted ? 'granted' : 'denied');
+  };
+
+  const handleSaveKey = () => {
+    if (openAIKey.trim()) {
+      localStorage.setItem('taskly_openai_key', openAIKey.trim());
+    } else {
+      localStorage.removeItem('taskly_openai_key');
+    }
+    setKeySaved(true);
+    setTimeout(() => setKeySaved(false), 2000);
   };
   const [form, setForm] = useState({
     full_name: profile?.full_name || '',
@@ -165,6 +179,50 @@ export default function Settings() {
             >
               تفعيل
             </button>
+          )}
+        </div>
+      </div>
+
+      {/* API Keys */}
+      <div className="card mb-5">
+        <h2 className="font-bold text-[#1E2A4A] dark:text-slate-100 flex items-center gap-2 mb-1">
+          <Key size={18} className="text-[#4A90D9]" />
+          مفتاح OpenAI
+        </h2>
+        <p className="text-xs text-gray-500 dark:text-slate-400 mb-4">
+          أضف مفتاحك لتفعيل الذكاء الاصطناعي الكامل — يُحفظ محلياً على جهازك فقط
+        </p>
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <input
+              type={showKey ? 'text' : 'password'}
+              value={openAIKey}
+              onChange={e => setOpenAIKey(e.target.value)}
+              placeholder="sk-..."
+              className="input-field pr-10 text-sm font-mono"
+            />
+            <button
+              onClick={() => setShowKey(s => !s)}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              {showKey ? <EyeOff size={15} /> : <Eye size={15} />}
+            </button>
+          </div>
+          <button
+            onClick={handleSaveKey}
+            className="btn-primary px-4 py-2 text-sm flex items-center gap-1.5"
+          >
+            {keySaved ? <><CheckCircle2 size={15} /> تم!</> : 'حفظ'}
+          </button>
+        </div>
+        <div className="mt-3 flex items-center gap-2">
+          <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
+            isAIConfigured() ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+          }`}>
+            {isAIConfigured() ? '✅ الذكاء الاصطناعي مفعّل' : '⚪ غير مفعّل'}
+          </span>
+          {openAIKey && !isAIConfigured() && (
+            <span className="text-xs text-amber-600">احفظ المفتاح أولاً</span>
           )}
         </div>
       </div>
